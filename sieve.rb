@@ -25,5 +25,10 @@ n = gets.to_i
 sieve = EratosthenesSieve.new(n)
 sieve.run
 
+if n < 2
+  puts "Ingrese un número mayor o igual a 2"
+  exit
+end
+
 puts sieve.primes.join(', ')
 
