@@ -1,3 +1,6 @@
+require 'benchmark'
+require 'memory_profiler'
+
 class EratosthenesSieve
   attr_reader :limit, :primes
 
@@ -19,16 +22,26 @@ class EratosthenesSieve
   end
 end
 
-puts "Ingrese la cantidad:"
-n = gets.to_i
+class SieveRunner
+  def self.execute
+    puts "Ingrese la cantidad:"
+    n = gets.to_i
 
-sieve = EratosthenesSieve.new(n)
-sieve.run
+    return puts("Ingrese un número >= 2") if n < 2
 
-if n < 2
-  puts "Ingrese un número mayor o igual a 2"
-  exit
+    sieve = EratosthenesSieve.new(n)
+
+    memory_report = nil
+    time = Benchmark.measure do
+      memory_report = MemoryProfiler.report { sieve.run }
+    end
+
+    puts "\nPrimos encontrados: #{sieve.primes.size}"
+    puts sieve.primes.join(', ')
+    puts "\nTiempo: #{time.real.round(6)} s"
+    puts "Memoria: #{memory_report.total_allocated_memsize} bytes"
+  end
 end
 
-puts sieve.primes.join(', ')
+SieveRunner.execute if __FILE__ == $0
 
